@@ -53,6 +53,11 @@ object ScreenUtils {
         return ImageUtils.returnImageToGrayscale(robot.createScreenCapture(sqmRectangle))
     }
 
+    fun getImagePuzzle(): BufferedImage{
+        val puzzleRectangle: Rectangle = SqmUtils.getPuzzleSqm()
+        return robot.createScreenCapture(puzzleRectangle)
+    }
+
     fun getStringConfigs(): String {
         return "mouseFirstPointer: ${mouseFirstPointer.x}, ${mouseFirstPointer.y}\n" +
                 "mouseSecondPointer: ${mouseSecondPointer.x}, ${mouseSecondPointer.y}\n" +

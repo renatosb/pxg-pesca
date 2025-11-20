@@ -21,29 +21,22 @@ object PuzzlePesca {
     private var robot: Robot = Robot()
 
     fun hasPuzzle(): Boolean {
-
-        val puzzleRectangle: Rectangle = SqmUtils.getPuzzleSqm()
-        val imagePuzzle = robot.createScreenCapture(puzzleRectangle)
-        return ImageUtils.hasPuzzle(imagePuzzle)
+        return ImageUtils.hasPuzzle(ScreenUtils.getImagePuzzle())
     }
 
     fun exportPuzzleGrayImage() {
-        val puzzleRectangle: Rectangle = SqmUtils.getPuzzleSqm()
-        val imagePuzzle = robot.createScreenCapture(puzzleRectangle)
-        ImageUtils.convertImageToGrayscale(imagePuzzle)
+         ImageUtils.convertImageToGrayscale(ScreenUtils.getImagePuzzle())
     }
 
     fun exportPuzzleImage() {
-        val puzzleRectangle: Rectangle = SqmUtils.getPuzzleSqm()
-        val imagePuzzle = robot.createScreenCapture(puzzleRectangle)
-        ImageUtils.convertImageToFile(imagePuzzle)
+        ImageUtils.convertImageToFile(ScreenUtils.getImagePuzzle())
     }
 
-    fun tocaAlarme(){
+    fun tocaAlarme() {
         val inputStream: InputStream? = this::class.java.classLoader.getResourceAsStream("olha-o-puzzle.wav")
         val bufferedIn: InputStream = BufferedInputStream(inputStream)
         val clip = AudioSystem.getClip()
-        clip.open(AudioSystem.getAudioInputStream(bufferedIn) )
+        clip.open(AudioSystem.getAudioInputStream(bufferedIn))
         clip.start()
     }
 
