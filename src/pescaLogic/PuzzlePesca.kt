@@ -21,11 +21,51 @@ object PuzzlePesca {
     private var robot: Robot = Robot()
 
     fun hasPuzzle(): Boolean {
-        return ImageUtils.hasPuzzle(ScreenUtils.getImagePuzzle())
+        val img: BufferedImage = ImageUtils.to3ByteBGR(ScreenUtils.getImagePuzzle())
+
+        val width = img.width
+        val height = img.height
+
+        val data = (img.raster.dataBuffer as DataBufferByte).data
+
+        // A barra preta tem média ~40–55 (confirmado no print)
+        val darkThreshold = 60
+
+        // amostragem: testa 1 coluna a cada 5
+        // (a barra é larga o suficiente para sempre ser capturada)
+        val step = maxOf(1, width / 30)  // adaptativo, ~30 colunas amostradas
+
+        for (x in 0 until width step step) {
+            var sum = 0
+
+            var offset = x * 3   // offset inicial na primeira linha
+
+            for (y in 0 until height) {
+                // cada linha avança width*3 bytes
+                val base = offset + y * width * 3
+
+                val b = data[base].toInt() and 0xFF
+                val g = data[base + 1].toInt() and 0xFF
+                val r = data[base + 2].toInt() and 0xFF
+
+                sum += r + g + b
+            }
+
+            // média da coluna
+            val colAvg = sum / (height * 3.0)
+
+            // encontrou a barra preta
+            if (colAvg < darkThreshold) {
+                return true
+            }
+        }
+
+        return false
     }
 
+
     fun exportPuzzleGrayImage() {
-         ImageUtils.convertImageToGrayscale(ScreenUtils.getImagePuzzle())
+        ImageUtils.convertImageToGrayscale(ScreenUtils.getImagePuzzle())
     }
 
     fun exportPuzzleImage() {

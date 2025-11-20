@@ -1,5 +1,7 @@
 package image
 
+import org.opencv.core.CvType
+import org.opencv.core.Mat
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.File
@@ -99,6 +101,41 @@ object ImageUtils {
         }
 
         return false
+    }
+
+    fun bufferedToMat(bi: BufferedImage): Mat {
+        // Garantir que o buffer esteja no formato 3BYTE_BGR (o mais aceito pelo OpenCV)
+        val imgBGR: BufferedImage =
+            if (bi.type != BufferedImage.TYPE_3BYTE_BGR) {
+                val newBi = BufferedImage(bi.width, bi.height, BufferedImage.TYPE_3BYTE_BGR)
+                val g = newBi.createGraphics()
+                g.drawImage(bi, 0, 0, null)
+                g.dispose()
+                newBi
+            } else bi
+
+        // Extrair bytes brutos da imagem
+        val raster = imgBGR.raster
+        val dataBuffer = raster.dataBuffer as java.awt.image.DataBufferByte
+        val data = dataBuffer.data
+
+        // Criar Mat correspondente
+        val mat = Mat(imgBGR.height, imgBGR.width, CvType.CV_8UC3)
+        mat.put(0, 0, data)
+
+        return mat
+    }
+
+    fun to3ByteBGR(src: BufferedImage): BufferedImage {
+        if (src.type == BufferedImage.TYPE_3BYTE_BGR) {
+            return src
+        }
+
+        val dst = BufferedImage(src.width, src.height, BufferedImage.TYPE_3BYTE_BGR)
+        val g = dst.createGraphics()
+        g.drawImage(src, 0, 0, null)
+        g.dispose()
+        return dst
     }
 
     fun loadImageFromResources(imagePath: String): BufferedImage {

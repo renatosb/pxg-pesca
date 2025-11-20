@@ -52,11 +52,17 @@ object PanelButton : TelaPanel {
         startPescaButton.addActionListener {
             OpenCVLoader
             val robot = Robot()
-            val puzzleRectangle: Rectangle = SqmUtils.getPuzzleSqm()
             //val capturaTela = robot.createScreenCapture(Rectangle(Toolkit.getDefaultToolkit().screenSize))
             //ImageUtils.convertImageToFile(capturaTela)
-            PuzzlePesca.exportPuzzleImage()
-        }
+            val timer = Timer(200){
+                if(PuzzlePesca.hasPuzzle())
+                    PanelInfo.updateBotLogText(StateEnum.RESOLVER_PUZZLE)
+                else
+                    PanelInfo.updateBotLogText(StateEnum.AGUARDAR_PEIXE)
+
+            }
+            timer.start()
+         }
     }
 
     override fun getPanel(): JPanel {
