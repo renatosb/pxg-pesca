@@ -1,0 +1,5 @@
+mouseFirstPointer: 773, 600
+mouseSecondPointer: 855, 601
+posicaoInicialPuzzle: 777, 474
+posicaoFinalPuzzle: 895, 839
+posicaoPrimeiroPoke: 35, 71

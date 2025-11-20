@@ -1,0 +1,7 @@
+package image
+
+
+object ImageRecognition {
+
+
+}
