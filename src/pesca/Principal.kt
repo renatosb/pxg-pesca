@@ -7,6 +7,7 @@ fun main(){
 }
 
 object OpenCVLoader {
+
     init {
         System.load("C:/opencv/native/opencv_java4120.dll")
     }

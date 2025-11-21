@@ -126,6 +126,26 @@ object ImageUtils {
         return mat
     }
 
+    fun matToBufferedImage(mat: Mat): BufferedImage {
+        val width = mat.width()
+        val height = mat.height()
+        val channels = mat.channels()
+
+        val buffer = ByteArray(width * height * channels)
+        mat.get(0, 0, buffer)
+
+        val type = when (channels) {
+            1 -> BufferedImage.TYPE_BYTE_GRAY
+            3 -> BufferedImage.TYPE_3BYTE_BGR
+            else -> throw IllegalArgumentException("Can’t convert Mat with $channels channels")
+        }
+
+        val image = BufferedImage(width, height, type)
+        image.raster.setDataElements(0, 0, width, height, buffer)
+
+        return image
+    }
+
     fun to3ByteBGR(src: BufferedImage): BufferedImage {
         if (src.type == BufferedImage.TYPE_3BYTE_BGR) {
             return src

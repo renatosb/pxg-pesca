@@ -1,6 +1,7 @@
 package pesca.tela
 
 import abstracts.TelaPanel
+import image.ImageRecognition
 import image.ImageUtils
 import org.opencv.imgproc.Imgproc
 import pesca.OpenCVLoader
@@ -54,15 +55,31 @@ object PanelButton : TelaPanel {
             val robot = Robot()
             //val capturaTela = robot.createScreenCapture(Rectangle(Toolkit.getDefaultToolkit().screenSize))
             //ImageUtils.convertImageToFile(capturaTela)
-            val timer = Timer(200){
-                if(PuzzlePesca.hasPuzzle())
-                    PanelInfo.updateBotLogText(StateEnum.RESOLVER_PUZZLE)
-                else
-                    PanelInfo.updateBotLogText(StateEnum.AGUARDAR_PEIXE)
+
+
+// 2) carregar template
+            val templateFishMat = ImageRecognition.loadAllTemplatesFromResources()
+            val timer = Timer(200) {
+// 3) recortar puzzle
+                val puzzleMat = PuzzleFish.bufferedImageToMat(ScreenUtils.getImagePuzzle())
+
+// 4) identificar peixe
+                val rect = ImageRecognition.identifyFishMultiTemplate(puzzleMat, templateFishMat)
+
+                if (rect != null) {
+                    val (cx, cy) = ImageRecognition.rectCenter(rect)
+                    val telaX = PuzzlePesca.getPuzzleInitialPosition().x + cx
+                    val telaY = PuzzlePesca.getPuzzleInitialPosition().y + cy
+
+                    //println("Peixe localizado em coordenadas absolutas: $telaX, $telaY")
+
+                    // aqui você faz ação no jogo
+                    SendInputUtils.specialMouseMove(Point(telaX, telaY))
+                }
 
             }
             timer.start()
-         }
+        }
     }
 
     override fun getPanel(): JPanel {
